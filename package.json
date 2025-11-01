@@ -8,7 +8,7 @@
     "buiild": "tsc",
     "start": "node dist/app.js",
     "migrate:js": "node dist/scripts/migrate.js",
-    "migrate:ts": "node src/scripts/migrate.ts"
+    "migrate:ts": "ts-node src/scripts/migrate.ts"
   },
   "repository": {
     "type": "git",
