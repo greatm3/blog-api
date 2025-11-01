@@ -4,7 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "nodemon",
+    "buiild": "tsc",
+    "start": "node dist/app.js",
+    "migrate:js": "node dist/scripts/migrate.js",
+    "migrate:ts": "node src/scripts/migrate.ts"
   },
   "repository": {
     "type": "git",
