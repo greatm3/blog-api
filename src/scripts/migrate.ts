@@ -9,15 +9,26 @@ async function createUsersTable() {
             created_at TIMESTAMP DEFAULT NOW()
         )`
     );
-    console.log('Users table created.')
+    console.log('Users table created.');
 }
 
 async function createStatusEnum() {
-    await appPool.query(
-        `CREATE TYPE IF NOT EXISTS status_enum AS ENUM ('draft', 'published')
-        `
-    );
-    console.log('Status Enum created.')
+    const exists = await appPool.query(`
+        SELECT EXISTS (
+        SELECT 1
+        FROM pg_type
+        WHERE typname = 'status_enum'
+        )
+    `);
+
+    if (!exists.rows[0].exists) {
+        await appPool.query(
+            `CREATE TYPE status_enum AS ENUM ('draft', 'published')`
+        );
+        console.log('Status enum created.');
+    } else {
+        console.log('Status enum already exists.');
+    }
 }
 
 async function createPostsTable() {
@@ -37,7 +48,7 @@ async function createPostsTable() {
         )
         `
     );
-    console.log('Posts table created.')
+    console.log('Posts table created.');
 }
 
 async function createIndexes() {
@@ -48,22 +59,21 @@ async function createIndexes() {
     await appPool.query(
         `CREATE INDEX IF NOT EXISTS idx_posts_created_at ON posts(created_at DESC)`
     );
-    console.log('Indexes created.')
+    console.log('Indexes created.');
 }
-
 
 async function up() {
     try {
-        console.log('Running migrations.')
+        console.log('Running migrations.');
         await createUsersTable();
         await createStatusEnum();
         await createPostsTable();
         await createIndexes();
-        console.log('Migrations done.')
+        console.log('Migrations done.');
     } catch (err) {
         if (err instanceof Error) {
-            console.log('Migration Failed!')
-            console.error(err.stack)
+            console.log('Migration Failed!');
+            console.error(err.stack);
         }
     }
 }
