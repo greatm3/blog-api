@@ -1,6 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { verifyToken } from '../utils/jwt.util'; 
-
+import { verifyToken } from '../utils/jwt.util';
 
 export async function authenticate(
     req: Request,
@@ -20,8 +19,8 @@ export async function authenticate(
 
     try {
         const payload = await verifyToken(authToken);
-        req.user = payload
-        next()
+        req.user = payload;
+        next();
     } catch (err) {
         if (err instanceof Error) {
             if (err.name === 'JsonWebTokenError') {
@@ -37,8 +36,8 @@ export async function authenticate(
                 };
                 return res.status(401).json(response);
             } else {
-                return next(err)
+                return next(err);
             }
-        } 
+        }
     }
 }
