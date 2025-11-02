@@ -1,9 +1,9 @@
 import { Router, Request, Response } from 'express';
+import { authenticate } from '../middlewares/auth.middleware';
+import { showAllPosts } from "../controllers/post.controller"
 
 const postRouter = Router();
 
-postRouter.post('/posts', (req: Request, res: Response) => {
-    res.status(200).json({ test: 'working' });
-});
+postRouter.post('/', authenticate, showAllPosts);
 
 export { postRouter };

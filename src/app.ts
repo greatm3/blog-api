@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import cors from 'cors';
 import path from 'path';
 import { authRouter } from './routes/auth.route';
+import { postRouter } from './routes/post.route'
 import { errorHandler } from './middlewares/error_handler.middleware';
 
 dotenv.config({
@@ -22,6 +23,7 @@ app.use(
 
 // use routers
 app.use('/api/auth', authRouter);
+app.use('/api/posts', postRouter)
 
 
 // error handler
