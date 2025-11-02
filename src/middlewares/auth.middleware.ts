@@ -23,6 +23,7 @@ export async function authenticate(
         next();
     } catch (err) {
         if (err instanceof Error) {
+            // return response based on ErrorName
             if (err.name === 'JsonWebTokenError') {
                 const response = {
                     success: false,
