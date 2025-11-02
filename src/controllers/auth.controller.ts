@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { validatePostRequest } from '../utils/validation.util';
+import { validateAuthRequest } from '../utils/validation.util';
 import { hashPassword, verifyHash } from '../utils/hash.util';
 import { UserService } from '../services/user.service';
 import appPool from '../db';
@@ -20,7 +20,7 @@ export async function register(
 
     const { email, password } = req.body;
 
-    const validationResult = validatePostRequest(email, password);
+    const validationResult = validateAuthRequest(email, password);
 
     if (!validationResult.success) {
         const response = {
@@ -73,7 +73,7 @@ export async function login(req: Request, res: Response, next: NextFunction) {
 
     const { email, password } = req.body;
 
-    const validationResult = validatePostRequest(email, password);
+    const validationResult = validateAuthRequest(email, password);
 
     if (!validationResult.success) {
         const response = {

@@ -1,7 +1,7 @@
 import * as zod from 'zod';
 
 
-export function validatePostRequest(email: string, password: string): zod.ZodSafeParseResult<{email: string, password: string}>  {
+export function validateAuthRequest(email: string, password: string): zod.ZodSafeParseResult<{email: string, password: string}>  {
     const schema = zod.object({
         email: zod.email(),
         password: zod
