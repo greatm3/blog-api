@@ -15,8 +15,8 @@ export async function authenticate(
         return res.status(401).json(response);
     }
 
-    const authToken = req.headers['authorization'].split(' ')[1];
-
+    const authToken = req.headers['authorization'].split(' ')[1]; // assuming the auth header is: Bearer token...
+    
     try {
         const payload = await verifyToken(authToken);
         req.user = payload;
