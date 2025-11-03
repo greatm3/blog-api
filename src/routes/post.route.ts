@@ -1,4 +1,4 @@
-import { Router, Request, Response } from 'express';
+import { Router } from 'express';
 import { authenticate } from '../middlewares/auth.middleware';
 import { showAllPosts, createPost, updatePost, deletePost } from "../controllers/post.controller"
 
