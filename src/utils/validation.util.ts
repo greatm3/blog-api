@@ -1,5 +1,5 @@
 import * as zod from 'zod';
-import { StatusEnum, PostRequest, ZodPostValidation } from '../types/post.type';
+import { StatusEnum, ZodPostValidation } from '../types/post.type';
 
 export function validateAuthRequest(
     email: string,
