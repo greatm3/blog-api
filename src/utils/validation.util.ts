@@ -1,5 +1,5 @@
 import * as zod from 'zod';
-import { StatusEnum, PostRequest } from '../types/post.type';
+import { StatusEnum, PostRequest, ZodPostValidation } from '../types/post.type';
 
 export function validateAuthRequest(
     email: string,
@@ -38,12 +38,35 @@ export function validatePostsRequest(
     title: string,
     content: string,
     excerpt: string,
-    status: StatusEnum
-): zod.ZodSafeParseResult<PostRequest> {
+    status: StatusEnum,
+    slug: string
+): zod.ZodSafeParseResult<ZodPostValidation> {
     const schema = zod.object({
         title: zod
             .string()
             .min(5, { message: 'title must be at least 5 characters' })
             .max(255, { message: 'title must not exceed 255 characters' }),
+        content: zod
+            .string()
+            .min(50, { message: 'content must be at least 50 characters' }),
+        excerpt: zod
+            .string()
+            .max(500, { message: 'excerpt must not exceed 500 characters' }),
+        status: zod.string(),
+        slug: zod.string(),
     });
+
+    type PostRequestInferedFromSchema = zod.infer<typeof schema>;
+
+    const postRequestParams: PostRequestInferedFromSchema = {
+        title,
+        content,
+        excerpt,
+        status,
+        slug,
+    };
+
+    let result = schema.safeParse(postRequestParams)
+
+    return result
 }

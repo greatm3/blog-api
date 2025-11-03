@@ -4,8 +4,13 @@ export type PostRequest = {
     title: string;
     content: string;
     excerpt: string;
-    status: StatusEnum;
 };
+
+export type PostRequestParams = PostRequest & {
+    status: StatusEnum
+}
+
+export type ZodPostValidation = PostRequest & { slug: string, status: string };
 
 export interface Post {
     id: number;
