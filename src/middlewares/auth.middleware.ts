@@ -16,7 +16,7 @@ export async function authenticate(
     }
 
     const authToken = req.headers['authorization'].split(' ')[1]; // assuming the auth header is: Bearer token...
-    
+
     try {
         const payload = await verifyToken(authToken);
         req.user = payload;

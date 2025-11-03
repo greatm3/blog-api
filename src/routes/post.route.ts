@@ -10,3 +10,4 @@ postRouter.put('/:slug', authenticate, updatePost);
 postRouter.delete('/:slug', authenticate, deletePost)
 
 export { postRouter };
+    
