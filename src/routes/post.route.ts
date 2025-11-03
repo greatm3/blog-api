@@ -6,7 +6,7 @@ const postRouter = Router();
 
 postRouter.post('/', authenticate, createPost);
 postRouter.get('/', showAllPosts);
-postRouter.put('/:slug', updatePost);
-postRouter.delete('/:slug', deletePost)
+postRouter.put('/:slug', authenticate, updatePost);
+postRouter.delete('/:slug', authenticate, deletePost)
 
 export { postRouter };
