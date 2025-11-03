@@ -1,9 +1,12 @@
 import { Router, Request, Response } from 'express';
 import { authenticate } from '../middlewares/auth.middleware';
-import { showAllPosts } from "../controllers/post.controller"
+import { showAllPosts, createPost, updatePost, deletePost } from "../controllers/post.controller"
 
 const postRouter = Router();
 
-postRouter.post('/', authenticate, showAllPosts);
+postRouter.post('/', authenticate, createPost);
+postRouter.get('/', showAllPosts);
+postRouter.put('/:slug', updatePost);
+postRouter.delete('/:slug', deletePost)
 
 export { postRouter };
