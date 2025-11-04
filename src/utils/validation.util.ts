@@ -52,7 +52,7 @@ export function validatePostsRequest(
         excerpt: zod
             .string()
             .max(500, { message: 'excerpt must not exceed 500 characters' }),
-        status: zod.string(),
+        status: zod.enum(['draft', 'published']),
         slug: zod.string(),
     });
 
@@ -66,7 +66,7 @@ export function validatePostsRequest(
         slug,
     };
 
-    let result = schema.safeParse(postRequestParams)
+    let result = schema.safeParse(postRequestParams);
 
-    return result
+    return result;
 }
