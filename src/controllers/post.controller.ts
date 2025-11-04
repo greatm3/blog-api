@@ -13,7 +13,15 @@ export async function createPost(
     res: Response,
     next: NextFunction
 ) {
-    res.status(200).json({ test: 'working' });
+    if (!req.body || !req.body.title || !req.body.content) {
+        return res
+            .status(400)
+            .json({ success: false, error: 'title and content are required' });
+    }
+
+    const { title, content, excerpt, status } = req.body;
+    
+    // if (!exc)
 }
 
 export async function updatePost(
