@@ -16,10 +16,10 @@ export async function createPost(
     res: Response,
     next: NextFunction
 ) {
-    if (!req.body || !req.body.title || !req.body.content) {
+    if (!req.body || !req.body.title || !req.body.content || !req.body.status) {
         return res
             .status(400)
-            .json({ success: false, error: 'title and content are required' });
+            .json({ success: false, error: 'title, content and status are required' });
     }
 
     const { title, content, status } = req.body;
@@ -44,6 +44,9 @@ export async function createPost(
 
             return res.status(422).json(response);
         }
+
+        
+
     } else {
         const response = {
             success: false,
