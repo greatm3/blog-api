@@ -19,7 +19,7 @@ export async function createPost(
             .json({ success: false, error: 'title and content are required' });
     }
 
-    const { title, content, excerpt, status } = req.body;
+    const { title, content, status } = req.body;
     
     // if (!exc)
 }
