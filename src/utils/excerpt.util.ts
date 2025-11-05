@@ -1,5 +1,5 @@
 export function generateExcerpt(content: string): string | undefined {
-    if (content && typeof content === 'string') {
+    if (typeof content === 'string' && content !== "") {
         let excerpt = '';
 
         const characters = content.split('');

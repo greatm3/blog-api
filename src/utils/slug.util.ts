@@ -1,5 +1,5 @@
 export function generateSlug(title: string): string | undefined {
-    if (title && typeof title === 'string') {
+    if (typeof title === 'string' && title !== "") {
         return title
             .toLowerCase()
             .replace(/[^a-z0-9]+/g, '-')
