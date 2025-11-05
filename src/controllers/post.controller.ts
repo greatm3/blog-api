@@ -1,4 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
+import { generateExcerpt } from '../utils/excerpt.util';
+import { generateSlug } from '../utils/slug.util';
+import { validatePostsRequest } from '../utils/validation.util';
 
 export async function showAllPosts(
     req: Request,
@@ -20,8 +23,35 @@ export async function createPost(
     }
 
     const { title, content, status } = req.body;
-    
-    // if (!exc)
+
+    const excerpt = generateExcerpt(content);
+    const slug = generateSlug(title);
+
+    if (excerpt && slug) {
+        const validationResult = validatePostsRequest(
+            title,
+            content,
+            excerpt,
+            status,
+            slug
+        );
+
+        if (!validationResult.success) {
+            const response = {
+                success: false,
+                error: JSON.parse(validationResult.error.message)[0].message, // use the custom message i set in the validation utiility function
+            };
+
+            return res.status(422).json(response);
+        }
+    } else {
+        const response = {
+            success: false,
+            error: 'Error generating resource',
+        };
+
+        return res.status(500).json(response);
+    }
 }
 
 export async function updatePost(
