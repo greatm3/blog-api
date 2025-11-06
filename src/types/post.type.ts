@@ -25,6 +25,13 @@ export interface Post {
     updated_at: Date;
 }
 
+export type UpdatePostParams = {
+    title?: string;
+    content?: string;
+    excerpt?: string;
+    status?: StatusEnum;
+};
+
 export interface PostServiceType<Post> {
     createPost(
         user_id: number,
@@ -37,15 +44,12 @@ export interface PostServiceType<Post> {
 
     updatePost(
         postID: number,
-        title?: string,
-        content?: string,
-        excerpt?: string,
-        status?: StatusEnum
+        updateFields: UpdatePostParams
     ): Promise<Post | undefined>;
 
-    deletePost(postID: number): Promise<boolean | undefined>
+    deletePost(postID: number): Promise<boolean | undefined>;
 
     getPosts(): Promise<Post[] | undefined>;
     getPostByUserID(userID: number): Promise<Post[] | undefined>;
-    getPostBySlug(slug: string): Promise<Post | undefined>
+    getPostBySlug(slug: string): Promise<Post | undefined>;
 }
