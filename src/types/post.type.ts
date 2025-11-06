@@ -33,7 +33,7 @@ export interface PostServiceType<Post> {
         content: string,
         excerpt: string,
         status: StatusEnum
-    ): Promise<Post | Error>;
+    ): Promise<Post | undefined>;
 
     updatePost(
         postID: number,
@@ -41,11 +41,11 @@ export interface PostServiceType<Post> {
         content?: string,
         excerpt?: string,
         status?: StatusEnum
-    ): Promise<Post | Error>;
+    ): Promise<Post | undefined>;
 
-    deletePost(postID: number): Promise<boolean | Error>
+    deletePost(postID: number): Promise<boolean | undefined>
 
     getPosts(): Promise<Post[] | Error>;
-    getPostByUserID(userID: number): Promise<Post[] | Error>;
-    getPostBySlug(slug: string): Promise<Post | Error>
+    getPostByUserID(userID: number): Promise<Post[] | undefined>;
+    getPostBySlug(slug: string): Promise<Post | undefined>
 }
