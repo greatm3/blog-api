@@ -1,5 +1,11 @@
 import appPool from '../db';
-import { Post, PostServiceType, StatusEnum } from '../types/post.type';
+import {
+    Post,
+    PostServiceType,
+    StatusEnum,
+    UpdatePostParams,
+} from '../types/post.type';
+import { generateUpdateQuery } from '../utils/generateUpdateQuery.util';
 
 export class PostService implements PostServiceType<Post> {
     constructor(private readonly db = appPool) {}
@@ -122,6 +128,46 @@ export class PostService implements PostServiceType<Post> {
             if (err instanceof Error) {
                 console.log(err.stack, 'error creating post');
                 throw new Error('error creating post');
+            }
+        }
+    }
+
+    async updatePost(
+        postID: number,
+        updateFields: UpdatePostParams
+    ): Promise<Post | undefined> {
+        const updateFieldsWithTime = updateFields;
+        updateFieldsWithTime.updated_at = new Date().toISOString();
+
+        try {
+            const updateQuery = generateUpdateQuery(
+                'posts',
+                updateFieldsWithTime,
+                'id',
+                postID
+            );
+
+            const post = await this.db.query(
+                updateQuery.query,
+                updateQuery.params
+            );
+            return post.rows[0];
+        } catch (err) {
+            if (err instanceof Error) {
+                console.log(err.stack, 'error updating post');
+                throw new Error('error updating post');
+            }
+        }
+    }
+
+    async deletePost(postID: number): Promise<boolean | undefined> {
+        try {
+            const post = await this.db.query(`DELETE FROM posts WHERE id = $1`, [postID])
+            return post.rowCount ? post.rowCount > 0 : false
+        } catch (err) {
+            if (err instanceof Error) {
+                console.log(err.stack, 'error deleting post');
+                throw new Error('error deleting post');
             }
         }
     }
