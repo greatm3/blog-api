@@ -30,6 +30,7 @@ export type UpdatePostParams = {
     content?: string;
     excerpt?: string;
     status?: StatusEnum;
+    updated_at: string
 };
 
 export interface PostServiceType<Post> {
