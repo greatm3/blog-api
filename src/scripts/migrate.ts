@@ -43,7 +43,7 @@ async function createPostsTable() {
             status status_enum DEFAULT 'draft',
             view_count INT DEFAULT 0,
             created_at TIMESTAMP DEFAULT NOW(),
-            updated_at TIMESTAMP,
+            updated_at TIMESTAMP DEFAULT NOW(),
             FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
         )
         `
