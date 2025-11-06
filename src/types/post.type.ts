@@ -45,7 +45,7 @@ export interface PostServiceType<Post> {
 
     deletePost(postID: number): Promise<boolean | undefined>
 
-    getPosts(): Promise<Post[] | Error>;
+    getPosts(): Promise<Post[] | undefined>;
     getPostByUserID(userID: number): Promise<Post[] | undefined>;
     getPostBySlug(slug: string): Promise<Post | undefined>
 }
