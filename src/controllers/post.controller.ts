@@ -45,8 +45,13 @@ export async function createPost(
             return res.status(422).json(response);
         }
 
-        
+        const response = {
+            success: true,
+            message: 'working'
+        }
 
+        return res.status(201).json(response)
+        
     } else {
         const response = {
             success: false,
