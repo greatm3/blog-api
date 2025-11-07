@@ -25,7 +25,7 @@ export class PostService implements PostServiceType<Post> {
                     p.status, 
                     p.view_count, 
                     p.created_at, 
-                    p.updated_at, 
+                    p.updated_at
                 FROM posts AS p INNER JOIN users AS u ON p.user_id = u.id WHERE p.slug = $1
             `,
                 [slug]
@@ -123,6 +123,8 @@ export class PostService implements PostServiceType<Post> {
                 const newPost = await this.getPostBySlug(slug);
 
                 return newPost;
+            } else {
+                throw new Error('post with slug already exists')
             }
         } catch (err) {
             if (err instanceof Error) {
@@ -151,7 +153,7 @@ export class PostService implements PostServiceType<Post> {
                 updateQuery.query,
                 updateQuery.params
             );
-            return post.rows[0];
+            return (await this.getPostByUserID())
         } catch (err) {
             if (err instanceof Error) {
                 console.log(err.stack, 'error updating post');
