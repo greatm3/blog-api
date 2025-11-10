@@ -14,7 +14,8 @@ export type ZodPostValidation = PostRequest & { slug: string; status: string };
 
 export interface Post {
     id: number;
-    user_id: number;
+    author_id: number;
+    author_email: string;
     title: string;
     slug: string;
     content: string;
@@ -30,7 +31,8 @@ export type UpdatePostParams = {
     content?: string;
     excerpt?: string;
     status?: StatusEnum;
-    updated_at: string
+    view_count?: number;
+    updated_at?: string;
 };
 
 export interface PostServiceType<Post> {
