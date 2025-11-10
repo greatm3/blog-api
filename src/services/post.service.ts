@@ -109,7 +109,8 @@ export class PostService implements PostServiceType<Post> {
     ): Promise<Post | undefined> {
         try {
             // check if slug exists
-            if (!(await this.getPostBySlug(slug))) {
+            const benchPost = await this.getPostBySlug(slug);
+            if (benchPost === undefined) {
                 const now = new Date().toISOString();
 
                 await this.db.query(
@@ -124,12 +125,17 @@ export class PostService implements PostServiceType<Post> {
 
                 return newPost;
             } else {
-                throw new Error('post with slug already exists')
+                throw new Error('post with slug already exists');
             }
         } catch (err) {
             if (err instanceof Error) {
-                console.log(err.stack, 'error creating post');
-                throw new Error('error creating post');
+                if (err.message == '')
+                    console.log(err.stack, 'error creating post');
+                throw new Error(
+                    err.message === 'post with slug already exists'
+                        ? err.message
+                        : 'error creating post'
+                );
             }
         }
     }
@@ -153,7 +159,7 @@ export class PostService implements PostServiceType<Post> {
                 updateQuery.query,
                 updateQuery.params
             );
-            return (await this.getPostBySlug(slug))
+            return await this.getPostBySlug(slug);
         } catch (err) {
             if (err instanceof Error) {
                 console.log(err.stack, 'error updating post');
@@ -164,8 +170,11 @@ export class PostService implements PostServiceType<Post> {
 
     async deletePost(postID: number): Promise<boolean | undefined> {
         try {
-            const post = await this.db.query(`DELETE FROM posts WHERE id = $1`, [postID])
-            return post.rowCount ? post.rowCount > 0 : false
+            const post = await this.db.query(
+                `DELETE FROM posts WHERE id = $1`,
+                [postID]
+            );
+            return post.rowCount ? post.rowCount > 0 : false;
         } catch (err) {
             if (err instanceof Error) {
                 console.log(err.stack, 'error deleting post');
