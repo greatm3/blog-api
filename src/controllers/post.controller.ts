@@ -15,6 +15,45 @@ export async function showAllPosts(
     res.status(200).json({ test: 'working' });
 }
 
+export async function getPost(req: Request, res: Response, next: NextFunction) {
+    if (req.params.slug) {
+        const post = await postService.getPostBySlug(req.params.slug);
+
+        if (post) {
+            const response = {
+                success: true,
+                data: {
+                    post: {
+                        id: post.id,
+                        title: post.title,
+                        slug: post.slug,
+                        content: post.content,
+                        excerpt: post.excerpt,
+                        status: post.status,
+                        view_count: post.view_count,
+                        author: {
+                            id: post.author_id,
+                            email: post.author_email,
+                        },
+                        created_at: post.created_at,
+                        updated_at: post.updated_at,
+                    },
+                },
+            };
+
+            await postService.updatePost(req.params.slug, {
+                view_count: post.view_count + 1,
+            });
+
+            return res.status(200).json(response);
+        }
+
+        return res
+            .status(404)
+            .json({ success: false, error: 'Post not found' });
+    }
+}
+
 export async function createPost(
     req: Request,
     res: Response,
@@ -76,8 +115,8 @@ export async function createPost(
                             status: newPost.status,
                             view_count: newPost.view_count,
                             author: {
-                                id: req.user.id,
-                                email: req.user.email,
+                                id: newPost.author_id,
+                                email: newPost.author_email,
                             },
                             created_at: newPost.created_at,
                             updated_at: newPost.updated_at,
