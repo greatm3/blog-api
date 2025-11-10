@@ -2,6 +2,10 @@ import { Request, Response, NextFunction } from 'express';
 import { generateExcerpt } from '../utils/excerpt.util';
 import { generateSlug } from '../utils/slug.util';
 import { validatePostsRequest } from '../utils/validation.util';
+import { PostService } from "../services/post.service"
+import appPool from '../db';
+
+const postService = new PostService(appPool)
 
 export async function showAllPosts(
     req: Request,
@@ -45,9 +49,14 @@ export async function createPost(
             return res.status(422).json(response);
         }
 
+        const newPost = await 
+
         const response = {
             success: true,
-            message: 'working'
+            message: 'Post created successfully',
+            data: {
+
+            }
         }
 
         return res.status(201).json(response)
