@@ -3,7 +3,7 @@ import { generateExcerpt } from '../utils/excerpt.util';
 import { generateSlug } from '../utils/slug.util';
 import { validatePostsRequest } from '../utils/validation.util';
 import { PostService } from '../services/post.service';
-import appPool from '../db';
+import appPool from '../db'; 
 
 const postService = new PostService(appPool);
 
@@ -40,12 +40,15 @@ export async function getPost(req: Request, res: Response, next: NextFunction) {
                     },
                 },
             };
+            if (post.status === 'published') {
+                await postService.updatePost(req.params.slug, {
+                    view_count: post.view_count + 1,
+                });
 
-            await postService.updatePost(req.params.slug, {
-                view_count: post.view_count + 1,
-            });
-
-            return res.status(200).json(response);
+                return res.status(200).json(response);
+            } else {
+                return next()
+            }
         }
 
         return res
