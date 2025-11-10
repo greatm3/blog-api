@@ -135,7 +135,7 @@ export class PostService implements PostServiceType<Post> {
     }
 
     async updatePost(
-        postID: number,
+        slug: string,
         updateFields: UpdatePostParams
     ): Promise<Post | undefined> {
         const updateFieldsWithTime = updateFields;
@@ -145,15 +145,15 @@ export class PostService implements PostServiceType<Post> {
             const updateQuery = generateUpdateQuery(
                 'posts',
                 updateFieldsWithTime,
-                'id',
-                postID
+                'slug',
+                slug
             );
 
             const post = await this.db.query(
                 updateQuery.query,
                 updateQuery.params
             );
-            return (await this.getPostByUserID())
+            return (await this.getPostBySlug(slug))
         } catch (err) {
             if (err instanceof Error) {
                 console.log(err.stack, 'error updating post');

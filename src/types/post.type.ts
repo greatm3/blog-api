@@ -44,7 +44,7 @@ export interface PostServiceType<Post> {
     ): Promise<Post | undefined>;
 
     updatePost(
-        postID: number,
+        slug: string,
         updateFields: UpdatePostParams
     ): Promise<Post | undefined>;
 
