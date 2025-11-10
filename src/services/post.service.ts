@@ -125,14 +125,14 @@ export class PostService implements PostServiceType<Post> {
 
                 return newPost;
             } else {
-                throw new Error('post with slug already exists');
+                throw new Error('slug exists');
             }
         } catch (err) {
             if (err instanceof Error) {
                 if (err.message == '')
                     console.log(err.stack, 'error creating post');
                 throw new Error(
-                    err.message === 'post with slug already exists'
+                    err.message === 'slug exists'
                         ? err.message
                         : 'error creating post'
                 );
