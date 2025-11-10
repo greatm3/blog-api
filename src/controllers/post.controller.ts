@@ -2,10 +2,10 @@ import { Request, Response, NextFunction } from 'express';
 import { generateExcerpt } from '../utils/excerpt.util';
 import { generateSlug } from '../utils/slug.util';
 import { validatePostsRequest } from '../utils/validation.util';
-import { PostService } from "../services/post.service"
+import { PostService } from '../services/post.service';
 import appPool from '../db';
 
-const postService = new PostService(appPool)
+const postService = new PostService(appPool);
 
 export async function showAllPosts(
     req: Request,
@@ -21,9 +21,10 @@ export async function createPost(
     next: NextFunction
 ) {
     if (!req.body || !req.body.title || !req.body.content || !req.body.status) {
-        return res
-            .status(400)
-            .json({ success: false, error: 'title, content and status are required' });
+        return res.status(400).json({
+            success: false,
+            error: 'title, content and status are required',
+        });
     }
 
     const { title, content, status } = req.body;
@@ -49,18 +50,44 @@ export async function createPost(
             return res.status(422).json(response);
         }
 
-        const newPost = await 
+        if (!req.user || typeof req.user !== 'object') {
+            next(new Error('Cannot find user')); // i will find a way to send a better response, with proper fields.
+        } else {
+            const newPost = await postService.createPost(
+                req.user.id,
+                title,
+                slug,
+                content,
+                excerpt,
+                status
+            );
 
-        const response = {
-            success: true,
-            message: 'Post created successfully',
-            data: {
+            if (newPost) {
+                const response = {
+                    success: true,
+                    message: 'Post created successfully',
+                    data: {
+                        post: {
+                            id: newPost.id,
+                            title: newPost.title,
+                            slug: newPost.slug,
+                            content: newPost.content,
+                            excerpt: newPost.excerpt,
+                            status: newPost.status,
+                            view_count: newPost.view_count,
+                            author: {
+                                id: req.user.id,
+                                email: req.user.email,
+                            },
+                            created_at: newPost.created_at,
+                            updated_at: newPost.updated_at,
+                        },
+                    },
+                };
 
+                return res.status(201).json(response);
             }
         }
-
-        return res.status(201).json(response)
-        
     } else {
         const response = {
             success: false,
