@@ -20,7 +20,7 @@ export function errorHandler(
         case 'slug exists':
             return res.status(409).json({
                 success: false,
-                error: 'post with slug already exists',
+                error: 'post with title already exists',
             });
 
         default:
