@@ -47,7 +47,7 @@ export async function getPost(req: Request, res: Response, next: NextFunction) {
 
                 return res.status(200).json(response);
             } else {
-                return next()
+                return res.send('sddjfsdvnjks')
             }
         }
 
@@ -55,6 +55,7 @@ export async function getPost(req: Request, res: Response, next: NextFunction) {
             .status(404)
             .json({ success: false, error: 'Post not found' });
     }
+    return res.send('sddjfsdvnjks')
 }
 
 export async function createPost(
