@@ -16,8 +16,8 @@ const postRouter = Router();
 const getPostMiddlewars = [checkAuthHeader, authenticate, isResourceOwner];
 
 postRouter.post('/', authenticate, createPost);
-postRouter.get('/:slug', getPost, getPostMiddlewars);
 postRouter.get('/', showAllPosts);
+postRouter.get('/:slug', getPost, getPostMiddlewars);
 postRouter.put('/:slug', authenticate, updatePost);
 postRouter.delete('/:slug', authenticate, deletePost);
 

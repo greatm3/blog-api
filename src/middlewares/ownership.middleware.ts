@@ -11,7 +11,27 @@ export async function isResourceOwner(
     if (post) {
         if (req.user && typeof req.user === 'object') {
             if (req.user.id === post.author_id) {
-                return next();
+                const response = {
+                    success: true,
+                    data: {
+                        post: {
+                            id: post.id,
+                            title: post.title,
+                            slug: post.slug,
+                            content: post.content,
+                            excerpt: post.excerpt,
+                            status: post.status,
+                            view_count: post.view_count,
+                            author: {
+                                id: post.author_id,
+                                email: post.author_email,
+                            },
+                            created_at: post.created_at,
+                            updated_at: post.updated_at,
+                        },
+                    },
+                };
+                return res.status(200).json(response);
             }
 
             const response = {
@@ -21,5 +41,6 @@ export async function isResourceOwner(
 
             return res.status(403).json(response);
         }
+        return res.send('dfsdsfsdfsdf');
     }
 }
