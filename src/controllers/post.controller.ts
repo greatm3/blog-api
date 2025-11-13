@@ -3,19 +3,18 @@ import { generateExcerpt } from '../utils/excerpt.util';
 import { generateSlug } from '../utils/slug.util';
 import { validatePostsRequest } from '../utils/validation.util';
 import { PostService } from '../services/post.service';
-import appPool from '../db'; 
+import appPool from '../db';
 
 const postService = new PostService(appPool);
 
 export async function showAllPosts(
     req: Request,
-    res: Response,
-    next: NextFunction
+    res: Response
 ) {
     res.status(200).json({ test: 'working' });
 }
 
-export async function getPost(req: Request, res: Response, next: NextFunction) {
+export async function getPost(req: Request, res: Response) {
     if (req.params.slug) {
         const post = await postService.getPostBySlug(req.params.slug);
 
@@ -40,22 +39,20 @@ export async function getPost(req: Request, res: Response, next: NextFunction) {
                     },
                 },
             };
-            if (post.status === 'published') {
-                await postService.updatePost(req.params.slug, {
-                    view_count: post.view_count + 1,
-                });
+            await postService.updatePost(req.params.slug, {
+                view_count: post.view_count + 1,
+            });
 
-                return res.status(200).json(response);
-            } else {
-                return next()
-            }
+            return res.status(200).json(response);
         }
-
-        return res
-            .status(404)
-            .json({ success: false, error: 'Post not found' });
     }
-    return res.send('sddjfsdvnjks')
+
+    return res.status(404).json({ success: false, error: 'Post not found' });
+}
+
+// return the owner's post if the status is 'draft'
+export async function getOwnerPost(req: Request, res: Response) {
+
 }
 
 export async function createPost(
