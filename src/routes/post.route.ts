@@ -22,7 +22,7 @@ postRouter.get('/:slug', getPostMiddlewars, getOwnerPost);
 
 postRouter.get('/:slug', getPost); // the next route handler for anonymous clients without authentication
 
-postRouter.put('/:slug', authenticate, updatePost);
+postRouter.patch('/:slug', authenticate, isResourceOwner, updatePost);
 postRouter.delete('/:slug', authenticate, deletePost);
 
 export { postRouter };
