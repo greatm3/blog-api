@@ -4,6 +4,7 @@ import { generateSlug } from '../utils/slug.util';
 import { validatePostsRequest } from '../utils/validation.util';
 import { PostService } from '../services/post.service';
 import appPool from '../db';
+import { UpdatePostParams } from '../types/post.type';
 
 const postService = new PostService(appPool);
 
@@ -108,10 +109,8 @@ export async function createPost(
     if (excerpt && slug) {
         const validationResult = validatePostsRequest(
             title,
-            content,
-            excerpt,
-            status,
-            slug
+            content, 
+            status, 
         );
 
         if (!validationResult.success) {
@@ -162,12 +161,7 @@ export async function createPost(
             }
         }
     } else {
-        const response = {
-            success: false,
-            error: 'Error generating resource',
-        };
-
-        return res.status(500).json(response);
+        next(new Error('Error generation slug/excerpt'));
     }
 }
 
@@ -176,7 +170,25 @@ export async function updatePost(
     res: Response,
     next: NextFunction
 ) {
-    res.status(200).json({ test: 'working' });
+    const fields: UpdatePostParams = {};
+
+    // if title and content exists, generate new slug and excerpt
+
+    if (req.body.title) {
+        fields.title = req.body.title;
+
+        const newSlug = generateSlug(req.body.title);
+    }
+
+    if (req.body.content) {
+        fields.content = req.body.content;
+
+        const newExcerpt = generateSlug(req.body.title);
+    }
+
+    if (req.body.status) {
+        fields.status = req.body.status;
+    }
 }
 
 export async function deletePost(

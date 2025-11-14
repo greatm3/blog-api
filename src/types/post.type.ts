@@ -2,15 +2,14 @@ export type StatusEnum = 'draft' | 'published';
 
 export type PostRequest = {
     title: string;
-    content: string;
-    excerpt: string;
+    content: string; 
 };
 
 export type PostRequestParams = PostRequest & {
     status: StatusEnum;
 };
 
-export type ZodPostValidation = PostRequest & { slug: string; status: string };
+export type ZodPostValidation = PostRequest & { status: string };
 
 export interface Post {
     id: number;

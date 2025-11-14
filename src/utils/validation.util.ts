@@ -36,10 +36,8 @@ export function validateAuthRequest(
 
 export function validatePostsRequest(
     title: string,
-    content: string,
-    excerpt: string,
-    status: StatusEnum,
-    slug: string
+    content: string, 
+    status: StatusEnum
 ): zod.ZodSafeParseResult<ZodPostValidation> {
     const schema = zod.object({
         title: zod
@@ -49,26 +47,23 @@ export function validatePostsRequest(
         content: zod
             .string()
             .min(50, { message: 'content must be at least 50 characters' }),
-        excerpt: zod
-            .string()
-            .max(500, { message: 'excerpt must not exceed 500 characters' }),
         status: zod.enum(['draft', 'published'], {
             message: 'status must be \'draft\' or \'published\'',
-        }),
-        slug: zod.string(),
+        })
     });
 
     type PostRequestInferedFromSchema = zod.infer<typeof schema>;
 
     const postRequestParams: PostRequestInferedFromSchema = {
         title,
-        content,
-        excerpt,
-        status,
-        slug,
+        content, 
+        status, 
     };
 
     let result = schema.safeParse(postRequestParams);
 
     return result;
 }
+
+
+// export function validateUpdatePostRequest(title?: string, content?: string, status?)
