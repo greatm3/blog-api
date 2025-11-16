@@ -1,7 +1,10 @@
 import { Request, Response, NextFunction } from 'express';
 import { generateExcerpt } from '../utils/excerpt.util';
 import { generateSlug } from '../utils/slug.util';
-import { validatePostsRequest } from '../utils/validation.util';
+import {
+    validatePostsRequest,
+    validateUpdatePostRequest,
+} from '../utils/validation.util';
 import { PostService } from '../services/post.service';
 import appPool from '../db';
 import { UpdatePostParams } from '../types/post.type';
@@ -107,11 +110,7 @@ export async function createPost(
     const slug = generateSlug(title);
 
     if (excerpt && slug) {
-        const validationResult = validatePostsRequest(
-            title,
-            content, 
-            status, 
-        );
+        const validationResult = validatePostsRequest(title, content, status);
 
         if (!validationResult.success) {
             const response = {
@@ -174,20 +173,37 @@ export async function updatePost(
 
     // if title and content exists, generate new slug and excerpt
 
+    let newSlug: string | undefined, newExcerpt: string | undefined;
+
     if (req.body.title) {
         fields.title = req.body.title;
 
-        const newSlug = generateSlug(req.body.title);
+        newSlug = generateSlug(req.body.title);
     }
 
     if (req.body.content) {
         fields.content = req.body.content;
 
-        const newExcerpt = generateSlug(req.body.title);
+        newExcerpt = generateSlug(req.body.title);
     }
 
     if (req.body.status) {
         fields.status = req.body.status;
+    }
+
+    const validationResult = validateUpdatePostRequest(
+        fields.title,
+        fields.content,
+        fields.status
+    );
+
+    if (!validationResult.success) {
+        const response = {
+            success: false,
+            error: JSON.parse(validationResult.error.message)[0].message, 
+        };
+
+        return res.status(422).json(response);
     }
 }
 
