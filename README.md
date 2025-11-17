@@ -131,7 +131,7 @@ curl -X POST http://localhost:9089/api/posts \
 
 - Get post 
 ```sh
-curl -X GET http://localhost:9089/api/posts/how-i-learned-javascript-the-hard-way 
+curl -X GET 'http://localhost:9089/api/posts/how-i-learned-javascript-the-hard-way' 
 # Expected 200 Response: post object
 ``` 
 
@@ -160,7 +160,7 @@ curl -X PATCH 'http://localhost:9089/api/posts/how-i-learned-javascript-the-hard
 
 - Delete post(not implemented yet)
 ```sh
-curl -X DELETE http://localhost:9089/api/posts/how-i-learned-javascript-the-hard-way \
+curl -X DELETE 'http://localhost:9089/api/posts/how-i-learned-javascript-the-hard-way' \
     -H "Authorization: Bearer YOUR_JWT_TOKEN"
 
 # Expected 204 Response: Empty response body
