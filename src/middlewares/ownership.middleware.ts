@@ -11,7 +11,7 @@ export async function isResourceOwner(
     if (post) {
         if (req.user && typeof req.user === 'object') {
             if (req.user.id === post.author_id) {
-                return next()
+                return next();
             }
 
             const response = {
@@ -22,4 +22,11 @@ export async function isResourceOwner(
             return res.status(403).json(response);
         }
     }
+
+    const response = {
+        success: false,
+        error: 'Post not found',
+    };
+
+    return res.status(404).json(response);
 }

@@ -173,18 +173,14 @@ export async function updatePost(
 
     // if title and content exists, generate new slug and excerpt
 
-    let newSlug: string | undefined, newExcerpt: string | undefined;
-
     if (req.body.title) {
         fields.title = req.body.title;
-
-        newSlug = generateSlug(req.body.title);
+        fields.slug = generateSlug(req.body.title);
     }
 
     if (req.body.content) {
         fields.content = req.body.content;
-
-        newExcerpt = generateSlug(req.body.title);
+        fields.excerpt = generateExcerpt(req.body.title);
     }
 
     if (req.body.status) {
@@ -209,9 +205,30 @@ export async function updatePost(
     const updatedPost = await postService.updatePost(req.params.slug, fields);
 
     if (updatedPost) {
-    }
+        const response = {
+            success: true,
+            message: 'Post updated successfully',
+            data: {
+                post: {
+                    id: updatedPost.id,
+                    title: updatedPost.title,
+                    slug: updatedPost.slug,
+                    content: updatedPost.content,
+                    excerpt: updatedPost.excerpt,
+                    status: updatedPost.status,
+                    view_count: updatedPost.view_count,
+                    author: {
+                        id: updatedPost.author_id,
+                        email: updatedPost.author_email,
+                    },
+                    created_at: updatedPost.created_at,
+                    updated_at: updatedPost.updated_at,
+                },
+            },
+        };
 
-    return res.status(404).json({ success: false, error: 'Post not found' });
+        return res.status(200).json(response)
+    }
 }
 
 export async function deletePost(

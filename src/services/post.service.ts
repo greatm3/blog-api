@@ -145,7 +145,7 @@ export class PostService implements PostServiceType<Post> {
         updateFields: UpdatePostParams
     ): Promise<Post | undefined> {
         const updateFieldsWithTime = updateFields;
-        updateFieldsWithTime.updated_at = new Date().toISOString();
+        updateFieldsWithTime.updated_at = new Date().toISOString(); // use current time to add to post table, updated_at column
 
         try {
             const updateQuery = generateUpdateQuery(
