@@ -159,7 +159,11 @@ export class PostService implements PostServiceType<Post> {
                 updateQuery.query,
                 updateQuery.params
             );
-            return await this.getPostBySlug(slug);
+
+            if (post) {
+                // get the updated post, using the new slug, this is because the getPostBySlug query has a join statement important for response
+                return await this.getPostBySlug(post.rows[0].slug);
+            }
         } catch (err) {
             if (err instanceof Error) {
                 console.log(err.stack, 'error updating post');
