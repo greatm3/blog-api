@@ -21,7 +21,7 @@ export function generateUpdateQuery(
     params.push(conditionValue);
 
     let query = `UPDATE ${tableName} SET `;
-    query += `${setClause.join(', ')} WHERE ${conditionField} = $${count++}`;
+    query += `${setClause.join(', ')} WHERE ${conditionField} = $${count++} RETURNING *`;
 
     return { query, params };
 }
