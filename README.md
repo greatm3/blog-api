@@ -148,7 +148,7 @@ curl -X GET 'http://localhost:9089/api/posts?page=2&limit=5&search=javascript'
 
 - Update post
 ```sh
-curl -X PATCH http://localhost:9089/api/posts/how-i-learned-javascript-the-hard-way \
+curl -X PATCH 'http://localhost:9089/api/posts/how-i-learned-javascript-the-hard-way' \
     -H "Authorization: Bearer YOUR_JWT_TOKEN" \ 
     -H "Content-Type: application/json" \
     -d '{
@@ -168,7 +168,7 @@ curl -X DELETE http://localhost:9089/api/posts/how-i-learned-javascript-the-hard
 
 TODOS
 
-- [] /api/posts get endpoint
-- [] /api/posts delete endpoint
-- [] Use Redis for caching
-- [] image uploads
+- [ ] /api/posts get endpoint
+- [ ] /api/posts delete endpoint
+- [ ] Use Redis for caching
+- [ ] image uploads
