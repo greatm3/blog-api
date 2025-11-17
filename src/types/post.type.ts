@@ -31,6 +31,7 @@ export type UpdatePostParams = {
     excerpt?: string;
     status?: StatusEnum;
     view_count?: number;
+    slug?: string;
     updated_at?: string;
 };
 
