@@ -227,7 +227,7 @@ export async function updatePost(
             },
         };
 
-        return res.status(200).json(response)
+        return res.status(200).json(response);
     }
 }
 
@@ -236,5 +236,15 @@ export async function deletePost(
     res: Response,
     next: NextFunction
 ) {
-    res.status(200).json({ test: 'working' });
+    if (req.params.slug) {
+        const post = await postService.deletePost(req.params.slug);
+
+        if (typeof post === 'boolean' && post) {
+            return res.status(204).send("");
+        }
+
+        return res
+            .status(404)
+            .json({ success: false, error: 'Post not found' });
+    }
 }

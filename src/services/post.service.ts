@@ -172,11 +172,11 @@ export class PostService implements PostServiceType<Post> {
         }
     }
 
-    async deletePost(postID: number): Promise<boolean | undefined> {
+    async deletePost(slug: string): Promise<boolean | undefined> {
         try {
             const post = await this.db.query(
-                `DELETE FROM posts WHERE id = $1`,
-                [postID]
+                `DELETE FROM posts WHERE slug = $1`,
+                [slug]
             );
             return post.rowCount ? post.rowCount > 0 : false;
         } catch (err) {

@@ -50,7 +50,7 @@ export interface PostServiceType<Post> {
         updateFields: UpdatePostParams
     ): Promise<Post | undefined>;
 
-    deletePost(postID: number): Promise<boolean | undefined>;
+    deletePost(slug: string): Promise<boolean | undefined>;
 
     getPosts(): Promise<Post[] | undefined>;
     getPostByUserID(userID: number): Promise<Post[] | undefined>;
