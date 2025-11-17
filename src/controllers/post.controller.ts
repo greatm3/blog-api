@@ -200,11 +200,18 @@ export async function updatePost(
     if (!validationResult.success) {
         const response = {
             success: false,
-            error: JSON.parse(validationResult.error.message)[0].message, 
+            error: JSON.parse(validationResult.error.message)[0].message,
         };
 
         return res.status(422).json(response);
     }
+
+    const updatedPost = await postService.updatePost(req.params.slug, fields);
+
+    if (updatedPost) {
+    }
+
+    return res.status(404).json({ success: false, error: 'Post not found' });
 }
 
 export async function deletePost(
