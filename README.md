@@ -62,3 +62,113 @@ npm run start # uses the port provided in the .env configuration
 - Bcrypt
 - Redis(not yet, still in implementation)
 
+## API Endpoints
+
+All API requests should be prefixed with `/api/`.
+
+### Authentication
+
+| HTTP Method | Endpoint | Description | Authentication Required | Body |
+| :--- | :--- | :--- | :--- | :--- |
+| `POST` | `/auth/register` | Creates a new user account. | No | `email`, `password` |
+| `POST` | `/auth/login` | Authenticates a user and returns a JWT. | No | `email`, `password` |
+| `GET` | `/auth/profile` | Authenticates a user and returns profile info | yes | No |
+
+### Posts Management
+
+Requests that require authentication must include the **JWT** in the `Authorization` header as a Bearer token.
+
+| HTTP Method | Endpoint | Description | Authentication Required | Access | Body |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| `POST` | `/posts` | Creates a new blog post. | Yes | Author | `title`, `content`, `status` |
+| **GET** | `/posts` | **Retrieves a paginated list of all published posts.** | No | Public | Query Params: `page`, `limit`, `search` |
+| `GET` | `/posts/:slug` | Retrieves a single post by slug. | No | Public | N/A |
+| `PATCH` | `/posts/:slug` | **Updates an existing post by slug.** | Yes | Author (Owner) | `title`, `content`, `status` all fields are optional |
+| `DELETE` | `/posts/:slug` | Deletes a post by slug. | Yes | Author (Owner) | N/A |
+
+### auth
+
+- register `http://localhost:9089/api/auth/register` - POST
+
+```sh
+
+curl -X POST http://localhost:3000/api/auth/register \
+    -H "Content-Type: application/json" \
+    -d '{"email":"test@test.test", "password":"Skijkhah99@#"}'
+```
+
+- login `http://localhost:3000/api/auth/login` - POST
+```sh
+
+curl -X POST http://localhost:3000/api/auth/login \
+    -H "Content-Type: application/json" \
+    -d '{"email":"test@test.test", "password":"Skijkhah99@#"}'
+```
+
+- profile `http://localhost:3000/api/auth/profile` - GET
+```sh
+
+curl -X GET http://localhost:3000/api/auth/profile \
+    -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzYxNjc0MjUwLCJleHAiOjE3NjE3NjA2NTB9.nstHLlvxLbREIjheQrd7F635JEd4ztHQG7Rl936dtts"
+```
+
+### posts
+- Create post
+```sh
+# Ensure 'YOUR_JWT_TOKEN' is replaced with the token from the login step.
+curl -X POST http://localhost:9089/api/posts \
+    -H "Authorization: Bearer YOUR_JWT_TOKEN" \ 
+    -H "Content-Type: application/json" \
+    -d '{
+        "title":"How I Learned JavaScript the Hard Way", 
+        "content":"When I first started learning JavaScript, I constantly made mistakes that forced me to understand how the language really works. I would forget semicolons, confuse '==' with '===', and mix up var, let, and const. Over time, I finally grasped the core concepts.", 
+        "status":"published"
+    }'
+
+# Expected 201 Response: Post object including the auto-generated 'slug' and 'excerpt'.
+
+```
+
+- Get post 
+```sh
+curl -X GET http://localhost:9089/api/posts/how-i-learned-javascript-the-hard-way 
+# Expected 200 Response: post object
+``` 
+
+- Get posts(not implemented yet).
+    Query Parameters: - `page` - Integer, default 1 - `limit` - Integer, default
+    10, max 50 - `author` - Email or user ID (filter by author) -
+    `search` - Search in title and content - `sort` - "newest", "oldest", "popular" (by
+    view_count > 50)
+
+```sh
+curl -X GET 'http://localhost:9089/api/posts?page=2&limit=5&search=javascript'
+# Expected 200 Response: A JSON object with 'data' child, -> data.posts = (an array), data.pagination = (obj, pagination metadata).
+```
+
+- Update post
+```sh
+curl -X PATCH http://localhost:9089/api/posts/how-i-learned-javascript-the-hard-way \
+    -H "Authorization: Bearer YOUR_JWT_TOKEN" \ 
+    -H "Content-Type: application/json" \
+    -d '{
+        "title": "My Updated JS Learning Experience", 
+        "status": "draft"
+    }'
+# Expected 200 Response: Updated post object. (Note: Title change regenerates slug).
+```
+
+- Delete post(not implemented yet)
+```sh
+curl -X DELETE http://localhost:9089/api/posts/how-i-learned-javascript-the-hard-way \
+    -H "Authorization: Bearer YOUR_JWT_TOKEN"
+
+# Expected 204 Response: Empty response body
+```
+
+TODOS
+
+- [] /api/posts get endpoint
+- [] /api/posts delete endpoint
+- [] Use Redis for caching
+- [] image uploads
