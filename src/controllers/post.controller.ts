@@ -14,13 +14,15 @@ const postService = new PostService(appPool);
 export async function showAllPosts(req: Request, res: Response) {
     
     const filterQueryParams: PostFilterQueryParams = {
-        page: Number(req.query.page) ?? undefined,
-        limit: Number(req.query.limit) ?? undefined,
+        page: req.query.page ? Number(req.query.page) : 1,
+        limit: req.query.limit ? Number(req.query.limit) : 10,
         author: req.query.author ? req.query.author.toString() : undefined,
         search: req.query.search ? req.query.search.toString() : undefined,
         status: req.query.status ? req.query.status.toString() : undefined,
         sort: req.query.sort ? req.query.sort.toString() : undefined
     }
+
+    res.status(200).json(filterQueryParams);
 
 }
 
