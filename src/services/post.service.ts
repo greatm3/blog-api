@@ -122,7 +122,6 @@ export class PostService implements PostServiceType<Post> {
                 );
 
                 const newPost = await this.getPostBySlug(slug);
-
                 return newPost;
             } else {
                 throw new Error('slug exists');

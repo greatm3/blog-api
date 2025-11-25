@@ -2,7 +2,7 @@ export type StatusEnum = 'draft' | 'published';
 
 export type PostRequest = {
     title: string;
-    content: string; 
+    content: string;
 };
 
 export type PostRequestParams = PostRequest & {
@@ -55,4 +55,13 @@ export interface PostServiceType<Post> {
     getPosts(): Promise<Post[] | undefined>;
     getPostByUserID(userID: number): Promise<Post[] | undefined>;
     getPostBySlug(slug: string): Promise<Post | undefined>;
+}
+
+export interface PostFilterQueryParams {
+    page?: number;
+    limit?: number;
+    author?: string;
+    search?: string;
+    status?: string;
+    sort?: string;
 }

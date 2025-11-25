@@ -7,12 +7,21 @@ import {
 } from '../utils/validation.util';
 import { PostService } from '../services/post.service';
 import appPool from '../db';
-import { UpdatePostParams } from '../types/post.type';
+import { PostFilterQueryParams, UpdatePostParams } from '../types/post.type';
 
 const postService = new PostService(appPool);
 
 export async function showAllPosts(req: Request, res: Response) {
-    res.status(200).json({ test: 'working' });
+    
+    const filterQueryParams: PostFilterQueryParams = {
+        page: Number(req.query.page) ?? undefined,
+        limit: Number(req.query.limit) ?? undefined,
+        author: req.query.author ? req.query.author.toString() : undefined,
+        search: req.query.search ? req.query.search.toString() : undefined,
+        status: req.query.status ? req.query.status.toString() : undefined,
+        sort: req.query.sort ? req.query.sort.toString() : undefined
+    }
+
 }
 
 export async function getPost(req: Request, res: Response) {
