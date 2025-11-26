@@ -8,22 +8,29 @@ import {
 import { PostService } from '../services/post.service';
 import appPool from '../db';
 import { PostFilterQueryParams, UpdatePostParams } from '../types/post.type';
+import { generatePaginationQuery } from '../utils/generatePaginationQuery';
 
 const postService = new PostService(appPool);
 
 export async function showAllPosts(req: Request, res: Response) {
-    
-    const filterQueryParams: PostFilterQueryParams = {
-        page: req.query.page ? Number(req.query.page) : 1,
-        limit: req.query.limit ? Number(req.query.limit) : 10,
-        author: req.query.author ? req.query.author.toString() : undefined,
-        search: req.query.search ? req.query.search.toString() : undefined,
-        status: req.query.status ? req.query.status.toString() : undefined,
-        sort: req.query.sort ? req.query.sort.toString() : undefined
+    function arrOrString(query: string[] | string | any) {
+        if (Array.isArray(query)) {
+            return query[0];
+        }
+
+        return query;
     }
 
-    res.status(200).json(filterQueryParams);
+    const filterQueryParams: PostFilterQueryParams = {
+        page: req.query.page ? arrOrString(req.query.page) : 1,
+        limit: req.query.limit ? arrOrString(req.query.limit) : 10,
+        author: req.query.author ? arrOrString(req.query.author) : undefined,
+        search: req.query.search ? arrOrString(req.query.search) : undefined,
+        status: req.query.status ? arrOrString(req.query.status) : undefined,
+        sort: req.query.sort ? arrOrString(req.query.sort) : undefined,
+    };
 
+    res.status(200).json({ query: generatePaginationQuery(filterQueryParams) });
 }
 
 export async function getPost(req: Request, res: Response) {
@@ -251,7 +258,7 @@ export async function deletePost(
         const post = await postService.deletePost(req.params.slug);
 
         if (typeof post === 'boolean' && post) {
-            return res.status(204).send("");
+            return res.status(204).send('');
         }
 
         return res
