@@ -2,16 +2,13 @@ import { PostFilterQueryParams } from '../types/post.type';
 
 // this is particularly for this blog api. would abstract it entirely later
 export function generatePaginationQuery(fields: PostFilterQueryParams) {
-    /**
-     * SELECT p.id, p.title, p.slug, p.excerpt, p.status, p.view_count, p.created_at, p.updated_at, u.id AS author_id, u.email
-     * AS author_email FROM posts AS p INNER JOIN users AS u ON p.user_id = u.id WHERE p.status = 'draft' AND u.email = 'test@gmail.com' AND (p.title ILIKE '%js%' OR p.content ILIKE '%js%') ORDER BY view_count DESC LIMIT 10 OFFSET 0;
-     */
-
     let query =
         'SELECT p.id, p.title, p.slug, p.excerpt, p.status, p.view_count, p.created_at, p.updated_at, u.id AS author_id, u.email AS author_email FROM posts AS p INNER JOIN users AS u ON p.user_id = u.id';
 
-    let count = 1;
+    let count = 0;
     let endingExpression = '';
+    let middleExpression = '';
+    const values: (string | number)[] = [];
 
     Object.entries(fields).forEach((field) => {
         const [key, value] = field;
@@ -32,11 +29,58 @@ export function generatePaginationQuery(fields: PostFilterQueryParams) {
                     default:
                         break;
                 }
+            } else {
+                let where = '';
+                if (key == 'author') {
+                    where = ' WHERE ';
+                    middleExpression += where + 'email = ' + '$' + (count + 1);
+                    if (fields.author) {
+                        values.push(fields.author);
+                    }
+                    count++;
+                } else if (key == 'search') {
+                    if (middleExpression !== '') {
+                        middleExpression +=
+                            ' AND (title ILIKE $' +
+                            (count + 1) +
+                            ' OR content ILIKE $' +
+                            (count + 1) +
+                            ')';
+                    } else {
+                        where = ' WHERE ';
+                        middleExpression +=
+                            where +
+                            '(p.title ILIKE $' +
+                            (count + 1) +
+                            ' OR p.content ILIKE $' +
+                            (count + 1) +
+                            ')';
+                    }
+                    if (fields.search) {
+                        values.push(`%${fields.search}%`);
+                    }
+                    count++;
+                }
             }
         }
     });
 
-    query += endingExpression;
+    if (!fields.sort) {
+        endingExpression += 'ORDER BY created_at DESC';
+    }
 
-    return query;
+    let offset = 0;
+
+    if (fields.limit && fields.page) {
+        offset = fields.limit * fields.page - fields.limit;
+        query +=
+            middleExpression +
+            endingExpression +
+            ' LIMIT ' +
+            fields.limit +
+            ' OFFSET ' +
+            offset;
+    }
+
+    return { query, values };
 }

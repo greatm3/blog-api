@@ -30,7 +30,7 @@ export async function showAllPosts(req: Request, res: Response) {
         sort: req.query.sort ? arrOrString(req.query.sort) : undefined,
     };
 
-    res.status(200).json({ query: generatePaginationQuery(filterQueryParams) });
+    res.status(200).json(generatePaginationQuery(filterQueryParams));
 }
 
 export async function getPost(req: Request, res: Response) {
