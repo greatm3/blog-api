@@ -1,10 +1,11 @@
 import { PostFilterQueryParams } from '../types/post.type';
 
-// this is particularly for this blog api. would abstract it entirely later
+// this is particularly for this blog api. would abstract it entirely later, also returns another query fro counting
 export function generatePaginationQuery(fields: PostFilterQueryParams) {
     let query =
         'SELECT p.id, p.title, p.slug, p.excerpt, p.status, p.view_count, p.created_at, p.updated_at, u.id AS author_id, u.email AS author_email FROM posts AS p INNER JOIN users AS u ON p.user_id = u.id';
-
+    let countQuery =
+        'SELECT COUNT(*) FROM posts AS p INNER JOIN users AS u ON p.user_id = u.id';
     let count = 0;
     let endingExpression = '';
     let middleExpression = '';
@@ -65,6 +66,8 @@ export function generatePaginationQuery(fields: PostFilterQueryParams) {
         }
     });
 
+    countQuery += middleExpression;
+
     if (!fields.sort) {
         endingExpression += 'ORDER BY created_at DESC';
     }
@@ -82,5 +85,5 @@ export function generatePaginationQuery(fields: PostFilterQueryParams) {
             offset;
     }
 
-    return { query, values };
+    return { query, countQuery, values };
 }

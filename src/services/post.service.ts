@@ -69,26 +69,16 @@ export class PostService implements PostServiceType<Post> {
         }
     }
 
-    async getPosts(): Promise<Post[] | undefined> {
+    async getPosts({
+        query,
+        values,
+    }: {
+        query: string;
+        values: (string | number)[];
+    }): Promise<Post[] | undefined> {
         // only return published posts
         try {
-            const posts = await this.db.query(
-                `
-                SELECT 
-                    p.id,
-                    u.id AS author_id, 
-                    u.email AS author_email,
-                    p.title, 
-                    p.slug,  
-                    p.excerpt, 
-                    p.status, 
-                    p.view_count, 
-                    p.created_at, 
-                    p.updated_at, 
-                FROM posts AS p INNER JOIN users AS u ON p.user_id = u.id WHERE p.status = $1
-            `,
-                ['published']
-            );
+            const posts = await this.db.query(query, [values]);
 
             return posts.rows;
         } catch (err) {

@@ -52,7 +52,13 @@ export interface PostServiceType<Post> {
 
     deletePost(slug: string): Promise<boolean | undefined>;
 
-    getPosts(): Promise<Post[] | undefined>;
+    getPosts({
+        query,
+        values,
+    }: {
+        query: string;
+        values: (string | number)[];
+    }): Promise<Post[] | undefined>;
     getPostByUserID(userID: number): Promise<Post[] | undefined>;
     getPostBySlug(slug: string): Promise<Post | undefined>;
 }
