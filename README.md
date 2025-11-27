@@ -172,7 +172,7 @@ curl -X PATCH 'http://localhost:9089/api/posts/how-i-learned-javascript-the-hard
 # Expected 200 Response: Updated post object. (Note: Title change regenerates slug).
 ```
 
--   Delete post(not implemented yet)
+-   Delete post
 
 ```sh
 curl -X DELETE 'http://localhost:9089/api/posts/how-i-learned-javascript-the-hard-way' \
@@ -184,6 +184,6 @@ curl -X DELETE 'http://localhost:9089/api/posts/how-i-learned-javascript-the-har
 TODOS
 
 -   [ ] /api/posts get endpoint
--   [ ] /api/posts delete endpoint
+-   [x] /api/posts delete endpoint
 -   [ ] Use Redis for caching
 -   [ ] image uploads
