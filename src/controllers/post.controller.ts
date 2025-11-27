@@ -7,7 +7,7 @@ import {
 } from '../utils/validation.util';
 import { PostService } from '../services/post.service';
 import appPool from '../db';
-import { PostFilterQueryParams, UpdatePostParams } from '../types/post.type';
+import { Post, PostFilterQueryParams, UpdatePostParams } from '../types/post.type';
 import { generatePaginationQuery } from '../utils/generatePaginationQuery';
 
 const postService = new PostService(appPool);
@@ -30,7 +30,70 @@ export async function showAllPosts(req: Request, res: Response) {
         sort: req.query.sort ? arrOrString(req.query.sort) : undefined,
     };
 
-    res.status(200).json(generatePaginationQuery(filterQueryParams));
+    // default limit to 10 if greater than 50
+    if (filterQueryParams.limit && filterQueryParams.limit > 50) {
+        filterQueryParams.limit = 10;
+    }
+
+    const posts = await postService.getPosts(
+        generatePaginationQuery(filterQueryParams)
+    );
+
+    if (!posts) {
+        return res
+            .status(404)
+            .json({ success: false, message: 'Posts not found' });
+    } else {
+        let totalPages = Math.ceil(
+            posts.totalPosts / Number(filterQueryParams.limit)
+        );
+        let currentPage = Number(filterQueryParams.page);
+        let postsPerPage = Number(filterQueryParams.limit);
+
+        // has_next prop in posts response. has_previous too
+        let hasNext = currentPage < totalPages;
+        let hasPrevious = currentPage > 1;
+
+        const responsePosts: Record<string, string | number | {}>[] = []
+
+        posts.posts.forEach((post) => {
+            const postFormat = {
+                id: post.id,
+                title: post.title,
+                slug: post.slug,
+                excerpt: post.excerpt,
+                status: post.status,
+                view_count: post.view_count,
+                author: {
+                    id: post.author_id,
+                    email: post.author_email,
+                },
+                created_at: post.created_at,
+                updated_at: post.updated_at,
+            };
+
+            responsePosts.push(postFormat);
+            
+        });
+
+        const response = {
+            success: true,
+            data: {
+                posts: responsePosts,
+                pagination: {
+                    current_page: currentPage,
+                    total_pages: totalPages,
+                    total_posts: posts.totalPosts,
+                    posts_per_page: postsPerPage,
+                    has_next: hasNext,
+                    has_previous: hasPrevious,
+                },
+            },
+        };
+
+
+        return res.status(200).json(response);
+    }
 }
 
 export async function getPost(req: Request, res: Response) {

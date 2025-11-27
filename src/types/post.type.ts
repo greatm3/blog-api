@@ -60,8 +60,8 @@ export interface PostServiceType<Post> {
         query: string;
         countQuery: string;
         values: (string | number)[];
-    }): Promise<Record<string, Post[] | Post> | undefined>;
-    
+    }): Promise<{ posts: Post[], totalPosts: number} | undefined>;
+
     getPostByUserID(userID: number): Promise<Post[] | undefined>;
     getPostBySlug(slug: string): Promise<Post | undefined>;
 }

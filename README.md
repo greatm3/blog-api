@@ -148,11 +148,10 @@ curl -X GET 'http://localhost:9089/api/posts/how-i-learned-javascript-the-hard-w
 # Expected 200 Response: post object
 ```
 
--   Get posts(not implemented yet).
+-   Get posts
     Query Parameters: - `page` - Integer, default 1 - `limit` - Integer, default
-    10, max 50 - `author` - Email or user ID (filter by author) -
-    `search` - Search in title and content - `sort` - "newest", "oldest", "popular" (by
-    view_count > 50)
+    10, max 50 - `author` - Email -
+    `search` - Search in title and content - `sort` - "newest", "oldest", "popular"
 
 ```sh
 curl -X GET 'http://localhost:9089/api/posts?page=2&limit=5&search=javascript'
@@ -183,7 +182,7 @@ curl -X DELETE 'http://localhost:9089/api/posts/how-i-learned-javascript-the-har
 
 TODOS
 
--   [ ] /api/posts get endpoint
+-   [x] /api/posts get endpoint
 -   [x] /api/posts delete endpoint
 -   [ ] Use Redis for caching
 -   [ ] image uploads

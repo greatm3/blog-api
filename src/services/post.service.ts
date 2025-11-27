@@ -77,13 +77,13 @@ export class PostService implements PostServiceType<Post> {
         query: string;
         countQuery: string;
         values: (string | number)[];
-    }): Promise<Record<string, Post[] | Post> | undefined> {
+    }): Promise<{ posts: Post[], totalPosts: number} | undefined> {
         // only return published posts
         try {
-            const postCount = await this.db.query(countQuery, [values]);
-            const posts = await this.db.query(query, [values]);
+            const postCount = await this.db.query(countQuery, values);
+            const posts = await this.db.query(query, values);
 
-            return { posts: posts.rows, count: postCount.rows[0] };
+            return { posts: posts.rows, totalPosts: postCount.rows[0].count };
         } catch (err) {
             if (err instanceof Error) {
                 console.log(err.stack, 'error getting posts');
