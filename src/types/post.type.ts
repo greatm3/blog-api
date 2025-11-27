@@ -54,11 +54,14 @@ export interface PostServiceType<Post> {
 
     getPosts({
         query,
+        countQuery,
         values,
     }: {
         query: string;
+        countQuery: string;
         values: (string | number)[];
-    }): Promise<Post[] | undefined>;
+    }): Promise<Record<string, Post[] | Post> | undefined>;
+    
     getPostByUserID(userID: number): Promise<Post[] | undefined>;
     getPostBySlug(slug: string): Promise<Post | undefined>;
 }
