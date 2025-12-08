@@ -185,4 +185,3 @@ TODOS
 -   [x] /api/posts get endpoint
 -   [x] /api/posts delete endpoint
 -   [ ] Use Redis for caching
--   [ ] image uploads
