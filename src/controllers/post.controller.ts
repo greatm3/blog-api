@@ -7,7 +7,7 @@ import {
 } from '../utils/validation.util';
 import { PostService } from '../services/post.service';
 import appPool from '../db';
-import { Post, PostFilterQueryParams, UpdatePostParams } from '../types/post.type';
+import { PostFilterQueryParams, UpdatePostParams } from '../types/post.type';
 import { generatePaginationQuery } from '../utils/generatePaginationQuery';
 
 const postService = new PostService(appPool);
@@ -73,7 +73,7 @@ export async function showAllPosts(req: Request, res: Response) {
             };
 
             responsePosts.push(postFormat);
-            
+
         });
 
         const response = {
