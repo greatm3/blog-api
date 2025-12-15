@@ -6,12 +6,22 @@ import {
     UpdatePostParams,
 } from '../types/post.type';
 import { generateUpdateQuery } from '../utils/generateUpdateQuery.util';
+import CacheService from './caching.service';
 
 export class PostService implements PostServiceType<Post> {
-    constructor(private readonly db = appPool) {}
+    constructor(private readonly db = appPool) { }
 
-    async getPostBySlug(slug: string): Promise<Post | undefined> {
+    async getPostBySlug(slug: string): Promise<Post | JSON | undefined> {
         try {
+
+            const cacheKey = `post:${slug}`;
+
+            const cachedPost = await CacheService.get(cacheKey);
+
+            if (cachedPost) {
+                return cachedPost;
+            }
+
             const post = await this.db.query(
                 `
                 SELECT 
@@ -77,7 +87,7 @@ export class PostService implements PostServiceType<Post> {
         query: string;
         countQuery: string;
         values: (string | number)[];
-    }): Promise<{ posts: Post[], totalPosts: number} | undefined> {
+    }): Promise<{ posts: Post[], totalPosts: number } | undefined> {
         // only return published posts
         try {
             const postCount = await this.db.query(countQuery, values);
