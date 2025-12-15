@@ -11,7 +11,7 @@ import CacheService from './caching.service';
 export class PostService implements PostServiceType<Post> {
     constructor(private readonly db = appPool) { }
 
-    async getPostBySlug(slug: string): Promise<Post | JSON | undefined> {
+    async getPostBySlug(slug: string): Promise<Post | undefined> {
         try {
 
             const cacheKey = `post:${slug}`;
@@ -40,6 +40,10 @@ export class PostService implements PostServiceType<Post> {
             `,
                 [slug]
             );
+
+            // store in cache for 10 mins
+            await CacheService.set(cacheKey, JSON.stringify(post.rows[0]), 600);
+
             return post.rows[0];
         } catch (err) {
             if (err instanceof Error) {

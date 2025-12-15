@@ -63,7 +63,7 @@ export interface PostServiceType<Post> {
     }): Promise<{ posts: Post[], totalPosts: number } | undefined>;
 
     getPostByUserID(userID: number): Promise<Post[] | undefined>;
-    getPostBySlug(slug: string): Promise<Post | JSON | undefined>;
+    getPostBySlug(slug: string): Promise<Post | undefined>;
 }
 
 export interface PostFilterQueryParams {

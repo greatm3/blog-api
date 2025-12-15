@@ -1,8 +1,9 @@
 import redisClient from '../config/redis'
+import { Post } from '../types/post.type';
 
 export default class CacheService {
 
-    static async get(key: string): Promise<JSON | null> {
+    static async get(key: string): Promise<Post | null> {
 
         const data = await redisClient.get(key);
 
