@@ -17,14 +17,15 @@ export default class CacheService {
         }
     }
 
-    static async set(key: string, value: string, ttl: number): Promise<string | null | undefined> {
+    static async set(key: string, value: string, ttl?: number): Promise<string | null | undefined> {
 
         try {
 
-            const response = await redisClient.set(key, value, {
-                EX: ttl,
-                // condition: 'NX'
-            })
+            const response = await redisClient.set(key, value)
+
+            if (typeof ttl == "number") {
+                await redisClient.setEx(key, ttl, value)
+            }
 
             return response;
 
