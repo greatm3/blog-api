@@ -14,12 +14,36 @@ export class PostService implements PostServiceType<Post> {
     async getPostBySlug(slug: string): Promise<Post | undefined> {
         try {
 
-            const cacheKey = `post:${slug}`;
+            const postCacheKey = `post:${slug}`;
+            const viewCountCacheKey = `${postCacheKey}:views`; // post view_count
 
-            const cachedPost = await CacheService.get(cacheKey);
+            let viewsFromCache;
+
+            const cachedPost = await CacheService.get(postCacheKey);
+
+            if (await CacheService.isSet(viewCountCacheKey)) {
+
+                await CacheService.incrementValue(viewCountCacheKey)
+                viewsFromCache = await CacheService.get(viewCountCacheKey)
+
+            }
 
             if (cachedPost) {
-                return cachedPost;
+                if (viewsFromCache && typeof viewsFromCache == "number") {
+                    cachedPost.view_count = viewsFromCache
+                    return cachedPost;
+                }
+
+                await CacheService.set(viewCountCacheKey, String(cachedPost.view_count));
+                viewsFromCache = await CacheService.get(viewCountCacheKey)
+
+                if (typeof viewsFromCache == "number") {
+                    cachedPost.view_count = viewsFromCache;
+                    return cachedPost;
+                }
+
+
+
             }
 
             const post = await this.db.query(
@@ -42,7 +66,7 @@ export class PostService implements PostServiceType<Post> {
             );
 
             // store in cache for 10 mins
-            await CacheService.set(cacheKey, JSON.stringify(post.rows[0]), 600);
+            await CacheService.set(postCacheKey, JSON.stringify(post.rows[0]), 600);
 
             return post.rows[0];
         } catch (err) {
