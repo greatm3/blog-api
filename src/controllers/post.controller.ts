@@ -127,9 +127,9 @@ export async function getPost(req: Request, res: Response) {
                     },
                 },
             };
-            await postService.updatePost(req.params.slug, {
-                view_count: post.view_count + 1,
-            });
+            // await postService.updatePost(req.params.slug, {
+            //    view_count: post.view_count + 1,
+            //});
 
             return res.status(200).json(response);
         }

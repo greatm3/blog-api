@@ -1,3 +1,4 @@
+import { vi } from 'zod/v4/locales';
 import appPool from '../db';
 import {
     Post,
@@ -118,10 +119,31 @@ export class PostService implements PostServiceType<Post> {
     }): Promise<{ posts: Post[], totalPosts: number } | undefined> {
         // only return published posts
         try {
-            const postCount = await this.db.query(countQuery, values);
-            const posts = await this.db.query(query, values);
+            const countQueryResult = await this.db.query(countQuery, values)
+            const postCount = countQueryResult.rows[0].count;
+            const postsfromDB = await this.db.query(query, values);
 
-            return { posts: posts.rows, totalPosts: postCount.rows[0].count };
+            // take the view_count property from cache 
+            //
+
+            for (let i = 0; i < postCount; i++) {
+                let post: Post = postsfromDB.rows[i];
+                const viewCountCacheKey = `post:${post.slug}:views`;
+
+                if (await CacheService.isSet(viewCountCacheKey)) {
+                    post.view_count = Number(await CacheService.get(viewCountCacheKey))
+                }
+
+                await CacheService.set(viewCountCacheKey, String(post.view_count))
+
+                post.view_count = Number(await CacheService.get(viewCountCacheKey))
+
+            }
+
+            return { posts: postsfromDB.rows, totalPosts: postCount };
+
+
+
         } catch (err) {
             if (err instanceof Error) {
                 console.log(err.stack, 'error getting posts');
