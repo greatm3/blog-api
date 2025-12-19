@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon",
-    "buiild": "tsc",
+    "build": "tsc",
     "start": "node dist/app.js",
     "migrate:js": "node dist/scripts/migrate.js",
     "migrate:ts": "ts-node src/scripts/migrate.ts"
