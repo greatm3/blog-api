@@ -5,7 +5,7 @@ const MAX_RETRIES = 5;
 export const sleep = (ms: number) => {
     return new Promise((resolve) => {
         setTimeout(() => {
-            resolve;
+            resolve(true);
         }, ms);
     });
 };
@@ -86,17 +86,28 @@ async function up() {
         success = true;
     } catch (err) {
         if (err instanceof Error) {
-            console.error(err.stack);
+            console.error(`[DB migration error]:`, err.stack);
         }
     }
 }
 
-let count = 1;
+let count = 0;
 
-if (!success) {
-    while (count < MAX_RETRIES) {
-        sleep(3000);
-        up();
-        count--;
+let delayMs = 2000; // will multiply by 2 everytime it tries again. the resulting time will be totally ((timeInMs / 1000) * 2^5)
+
+(async () => {
+    if (!success) {
+        while (count < MAX_RETRIES) {
+
+            if (success) break;
+
+            await sleep(delayMs);
+            console.log("Retrying migration...");
+            await up();
+
+            delayMs *= 2;
+            count++;
+        }
     }
-}
+})();
+
