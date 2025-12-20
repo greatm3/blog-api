@@ -2,8 +2,8 @@ import appPool from "../db";
 
 const MAX_RETRIES = 5;
 
-export const sleep = (ms: number, resolve: () => void) => {
-    return new Promise((_resolve) => {
+export const sleep = (ms: number) => {
+    return new Promise((resolve) => {
         setTimeout(() => {
             resolve;
         }, ms);
