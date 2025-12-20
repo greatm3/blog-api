@@ -85,14 +85,18 @@ async function up() {
 
         success = true;
     } catch (err) {
-        for (let i = 0; i < MAX_RETRIES; i++) {
-            
-        }
-
         if (err instanceof Error) {
-            console.log("Migration Failed!");
             console.error(err.stack);
         }
     }
 }
 
+let count = 1;
+
+if (!success) {
+    while (count < MAX_RETRIES) {
+        sleep(3000);
+        up();
+        count--;
+    }
+}
